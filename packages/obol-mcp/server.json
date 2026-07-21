@@ -1,0 +1,37 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.superbigroach/obol",
+  "title": "Obol",
+  "description": "Monetize and pay for APIs from AI agents. Obol is the marketplace where agents discover services and pay per call in USDC — gasless, sub-cent (from $0.000001), 0% commission, via x402 + Circle Gateway on Arc. List your API to earn, or let your agent find and pay for services automatically.",
+  "repository": {
+    "url": "https://github.com/superbigroach/obol-arc.git",
+    "source": "github"
+  },
+  "version": "0.2.2",
+  "websiteUrl": "https://obol-arc.web.app",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@superbigroach/obol-mcp",
+      "version": "0.2.2",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "OBOL_API_KEY",
+          "isRequired": true,
+          "isSecret": true,
+          "description": "Your Obol API key (obl_sk_live_...) from obol-arc.web.app/settings — identifies your account for listing services and metered calls."
+        },
+        {
+          "name": "OBOL_AGENT_KEY",
+          "isRequired": false,
+          "isSecret": true,
+          "description": "32-byte hex Arc wallet private key that signs gasless x402/EIP-3009 payment authorizations. Needed only for paying (pay_and_call); discovery and listing work without it."
+        }
+      ]
+    }
+  ]
+}

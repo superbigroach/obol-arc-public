@@ -1,0 +1,39 @@
+{
+  "name": "obol-app",
+  "version": "0.1.0",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Sebastian Borjas / Lucilla Inc.",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@circle-fin/developer-controlled-wallets": "^8.3.0",
+    "@circle-fin/w3s-pw-web-sdk": "^1.1.11",
+    "@circle-fin/x402-batching": "^3.2.0",
+    "@google-cloud/secret-manager": "^6.2.0",
+    "@simplewebauthn/browser": "^13.3.0",
+    "ethers": "^6.17.0",
+    "firebase": "^12.0.0",
+    "next": "15.5.19",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "resend": "^6.16.0",
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.19",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

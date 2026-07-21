@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-base: #ffffff;
+  --color-base2: #fafafb;
+  --color-ink: #0a0a0f;
+  --color-muted: #5b5b6b;
+  --color-hero: #0b0b12;
+  --color-primary: #6d5ef6;
+  --color-glow: #3b9eff;
+  --color-success: #15c26b;
+  --color-hairline: #ececf1;
+  --font-sans: var(--font-inter), -apple-system, system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--color-base2);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- shared bits ported from the design ---- */
+.grad { background: linear-gradient(135deg, #6d5ef6 0%, #3b9eff 100%); }
+.grad-text {
+  background: linear-gradient(135deg, #6d5ef6 0%, #3b9eff 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.shadow-soft { box-shadow: 0 1px 2px rgba(10,10,15,.04), 0 8px 24px rgba(10,10,15,.06); }
+.shadow-lg2 { box-shadow: 0 20px 60px rgba(10,10,15,.10); }
+
+/* glowing dark hero card */
+.hero-card {
+  position: relative; overflow: hidden; border-radius: 28px; color: #fff;
+  background:
+    radial-gradient(130% 130% at 74% 30%, rgba(109,94,246,.42) 0%, rgba(59,158,255,.16) 32%, transparent 62%),
+    #0b0b12;
+  box-shadow: inset 0 0 240px rgba(0,0,0,.75), 0 20px 60px rgba(10,10,15,.10);
+}
+.hero-card::after {
+  content: ""; position: absolute; inset: 0; opacity: .035; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.dark-glow {
+  position: relative; overflow: hidden;
+  background: radial-gradient(80% 120% at 50% 0%, rgba(109,94,246,.35), transparent 60%), #0b0b12;
+}
+.final-glow {
+  background: radial-gradient(130% 130% at 50% 0%, rgba(109,94,246,.45), transparent 55%), #0b0b12;
+  box-shadow: inset 0 0 240px rgba(0,0,0,.7), 0 20px 60px rgba(10,10,15,.10);
+}
+.coin-glow {
+  position: absolute; width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,158,255,.5), transparent 65%); filter: blur(30px);
+}
+.coin-float { animation: float 6s ease-in-out infinite; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }

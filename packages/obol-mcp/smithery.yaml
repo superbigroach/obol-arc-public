@@ -1,0 +1,40 @@
+name: obol
+displayName: Obol — Metered API Marketplace (Arc/USDC)
+description: |
+  Let any AI agent discover, pay for, and call metered APIs in USDC on Arc.
+  Obol is a pay-per-call API marketplace where agents pay sellers directly — no subscription, no account needed. Each call costs fractions of a cent and settles on-chain instantly.
+
+  Tools:
+  - find_service — search the marketplace for available APIs
+  - pay_and_call — pay in USDC and call any listed service
+  - list_service — publish your own API for other agents to buy
+  - get_balance — check your Arc wallet + Gateway balance
+  - deposit — top up your agent wallet
+
+homepage: https://obol-arc.web.app
+license: MIT
+repository: https://github.com/superbigroach/obol-arc
+
+runtime: node
+command: npx
+args:
+  - -y
+  - "@superbigroach/obol-mcp"
+
+env:
+  OBOL_AGENT_KEY:
+    description: "0x… private key of an Arc testnet wallet funded with USDC. Get testnet USDC at faucet.circle.com"
+    required: true
+  OBOL_FACILITATOR:
+    description: "Obol marketplace base URL (default: https://obol-arc.web.app)"
+    required: false
+
+tags:
+  - payments
+  - usdc
+  - api-marketplace
+  - blockchain
+  - arc
+  - circle
+  - agents
+  - mcp

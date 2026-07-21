@@ -1,0 +1,25 @@
+rules_version = '2';
+
+// Skill files (OpenAPI specs, Markdown docs) sellers upload for their listings.
+// Public-read (agents + humans read the skill), owner-write, size-capped.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /logos/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.uid == uid
+                   && request.resource.size < 2 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+    match /skills/{uid}/{file=**} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.uid == uid
+                   && request.resource.size < 1 * 1024 * 1024
+                   && request.resource.contentType.matches('text/.*|application/(json|yaml|x-yaml|pdf|octet-stream)');
+    }
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,75 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# secrets / local config — NEVER commit (contain live keys)
+.mcp.json
+*.mcp.json
+**/.env
+*.pem
+*.p8
+service-account*.json
+*serviceaccount*.json
+firebase-debug.log
+
+# dependencies
+/node_modules
+node_modules/
+functions/node_modules/
+functions/lib/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+*-recovery-file.json
+*recovery*.json
+*.key
+
+# firebase build output / cache
+.firebase/
+.firebaserc.local
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# debug logs (never commit — can contain request/response data)
+*-debug.log
+firebase-debug.log
+firestore-debug.log
+
+# internal/security docs — kept local, never published
+docs/internal/
+*_INTERNAL.md
+SECURITY_REPORT.md
+
+# package build output (npm still publishes dist; git does not track it)
+packages/*/dist/
+packages/*/node_modules/

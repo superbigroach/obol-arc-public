@@ -1,0 +1,138 @@
+rules_version = '2';
+
+// Obol reads/writes Firestore from the client (Web SDK); money/settlement is
+// entirely in Circle Gateway, so nothing custodial lives here.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function owns(uid) { return signedIn() && request.auth.uid == uid; }
+
+    // Services directory: public read of active listings; owner-only writes.
+    match /services/{id} {
+      allow read: if resource.data.active == true || owns(resource.data.ownerUid);
+      allow create: if owns(request.resource.data.ownerUid)
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.priceUsdc is string
+                    && request.resource.data.payoutAddress is string
+                    && request.resource.data.payoutAddress.matches('0x[0-9a-fA-F]{40}')
+                    && request.resource.data.hostedUrl is string
+                    && request.resource.data.active == true;
+      allow update, delete: if owns(resource.data.ownerUid);
+    }
+
+    // Public profile (display name, avatar, socials, payout address, verified
+    // business name) — readable by anyone so seller profiles work; owner-write.
+    //
+    // SERVER-ONLY FIELDS: agentLimits, agentLimitsUpdatedAt and spendingBalance
+    // are written ONLY by Cloud Functions (Admin SDK bypasses these rules). The
+    // client can never create or modify them directly — that's what forces every
+    // limit change through setUserAgentLimits, which requires a valid 2FA code,
+    // and stops a user from minting their own spending credits.
+    match /profiles/{uid} {
+      function protectedKeys() {
+        // 'passkey' is server-only (Admin SDK): a client must not be able to
+        // overwrite it with an attacker-controlled credential OR delete it to
+        // downgrade to the "no passkey → allowed" withdrawal path. SECURITY P0.
+        return ['agentLimits', 'agentLimitsUpdatedAt', 'spendingBalance', 'spendWindows', 'passkey'];
+      }
+      allow read: if true;
+      allow create: if owns(uid)
+                    && !request.resource.data.keys().hasAny(protectedKeys());
+      allow update: if owns(uid)
+                    && !request.resource.data.diff(resource.data).affectedKeys().hasAny(protectedKeys());
+      allow delete: if false;
+    }
+
+    // Audit / ack log — append-only, owner-scoped. No edits or deletes so the
+    // trail is tamper-evident.
+    match /events/{id} {
+      allow read: if owns(resource.data.uid);
+      allow create: if owns(request.resource.data.uid)
+                    && request.resource.data.type is string
+                    && request.resource.data.ts is number;
+      allow update, delete: if false;
+    }
+
+    // Ratings + disputes — public read; a user can write only their OWN rating
+    // (doc id is `<serviceId>_<uid>`), stars 1–5. No deletes.
+    match /ratings/{id} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+                            && request.resource.data.uid == request.auth.uid
+                            && request.resource.data.stars is int
+                            && request.resource.data.stars >= 1
+                            && request.resource.data.stars <= 5;
+      allow delete: if false;
+    }
+
+    // Direct messages — one thread per (service, buyer) pair; both parties can
+    // read/write. Only the buyer can CREATE the thread (first contact).
+    match /threads/{threadId} {
+      // resource == null when the doc doesn't exist yet (getDoc before first write);
+      // accessing resource.data on null crashes rule eval → deny. Allow null reads so
+      // initiateThread can check existence before creating the thread.
+      allow read: if signedIn()
+                  && (resource == null
+                      || request.auth.uid == resource.data.sellerUid
+                      || request.auth.uid == resource.data.buyerUid);
+      allow create: if signedIn()
+                    && request.auth.uid == request.resource.data.buyerUid
+                    && request.resource.data.sellerUid is string;
+      allow update: if signedIn()
+                    && (request.auth.uid == resource.data.sellerUid
+                        || request.auth.uid == resource.data.buyerUid)
+                    && request.resource.data.sellerUid == resource.data.sellerUid
+                    && request.resource.data.buyerUid == resource.data.buyerUid;
+      allow delete: if false;
+
+      match /messages/{msgId} {
+        function isThreadParticipant() {
+          let t = get(/databases/$(database)/documents/threads/$(threadId));
+          return t != null && (
+            request.auth.uid == t.data.sellerUid ||
+            request.auth.uid == t.data.buyerUid
+          );
+        }
+        allow read: if signedIn() && isThreadParticipant();
+        // CREATE: don't re-check participant via get() — the thread was just written
+        // milliseconds before and the server-side get() may not see it yet.
+        // `from == auth.uid` ensures nobody can spoof the sender field.
+        allow create: if signedIn()
+                      && request.resource.data.from == request.auth.uid
+                      && request.resource.data.body is string
+                      && request.resource.data.body.size() > 0;
+        allow update, delete: if false;
+      }
+    }
+
+    // API keys — server-only via Admin SDK. No client can read or write.
+    // Keys are stored hashed; plaintext never persisted.
+    match /apiKeys/{keyHash} {
+      allow read, write: if false;
+    }
+
+    // Verifiable payment receipts — written server-side after signature
+    // verification. Client cannot forge or mutate them (Admin SDK bypasses).
+    match /receipts/{id} {
+      allow read, write: if false;
+    }
+
+    // Service safety reports — written only via the /api/report endpoint (Admin
+    // SDK), which dedupes and can auto-quarantine. No direct client access.
+    match /reports/{id} {
+      allow read, write: if false;
+    }
+
+    // Learned threat patterns, Gemini judgements — the security learning layer.
+    // Server-only (Admin SDK); never client-readable/writable.
+    match /threatPatterns/{id} { allow read, write: if false; }
+    match /geminiJudgements/{id} { allow read, write: if false; }
+
+    // Everything else: no client access.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
