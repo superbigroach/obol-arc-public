@@ -1,9 +1,15 @@
 {
   "name": "obol-app",
   "version": "0.1.0",
+  "private": true,
+  "description": "Obol — pay-per-call USDC payments for AI agents on Arc. Agents discover metered APIs, pay per call, and settle keylessly via Circle Gateway.",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Sebastian Borjas / Lucilla Inc.",
-  "private": true,
+  "homepage": "https://obol-arc.web.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superbigroach/obol-arc-public.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

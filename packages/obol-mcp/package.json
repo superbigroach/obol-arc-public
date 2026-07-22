@@ -2,13 +2,14 @@
   "name": "@superbigroach/obol-mcp",
   "mcpName": "io.github.superbigroach/obol",
   "version": "0.2.5",
+  "description": "Obol MCP server — let any AI agent find, pay for, and call metered APIs in USDC on Arc.",
   "license": "MIT",
   "author": "Sebastian Borjas / Lucilla Inc.",
-  "description": "Obol MCP server — let any AI agent find, pay for, and call metered APIs in USDC on Arc.",
   "type": "module",
+  "homepage": "https://obol-arc.web.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/superbigroach/obol-arc.git"
+    "url": "https://github.com/superbigroach/obol-mcp.git"
   },
   "bin": {
     "obol-mcp": "dist/index.js",

@@ -4,7 +4,7 @@
   "title": "Obol",
   "description": "Monetize and pay for APIs from AI agents. Obol is the marketplace where agents discover services and pay per call in USDC — gasless, sub-cent (from $0.000001), 0% commission, via x402 + Circle Gateway on Arc. List your API to earn, or let your agent find and pay for services automatically.",
   "repository": {
-    "url": "https://github.com/superbigroach/obol-arc.git",
+    "url": "https://github.com/superbigroach/obol-mcp.git",
     "source": "github"
   },
   "version": "0.2.2",

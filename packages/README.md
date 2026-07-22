@@ -63,5 +63,11 @@ Pass `X-Obol-Api-Key: obl_sk_live_...` header (get a key at [obol-arc.web.app/se
 ## Links
 
 - Marketplace: [obol-arc.web.app](https://obol-arc.web.app)
-- GitHub: [superbigroach/obol-arc](https://github.com/superbigroach/obol-arc)
+- Package source: [superbigroach/obol-mcp](https://github.com/superbigroach/obol-mcp)
+- Platform source: [superbigroach/obol-arc-public](https://github.com/superbigroach/obol-arc-public)
 - Arc faucet: [faucet.circle.com](https://faucet.circle.com)
+
+## License
+
+MIT — see [LICENSE](LICENSE). (The Obol platform itself is Elastic License 2.0; this client package
+is MIT so agents can depend on it freely.)
